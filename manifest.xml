@@ -1,0 +1,16 @@
+<package>
+  <description brief="rgb_lights_manager_dev">
+
+     rgb_lights_manager_dev
+
+  </description>
+  <author>sdries</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/rgb_lights_manager_dev</url>
+  <depend package="roscpp"/>
+  <depend package="amigo_msgs"/>
+
+</package>
+
+
