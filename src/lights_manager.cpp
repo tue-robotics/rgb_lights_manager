@@ -178,11 +178,11 @@ void initMapping() {
 	colorMapping["default"] = RGB(0, 0, 1);       //Blue
 	colorMapping["manipulate"] = RGB(1, 0, 0);    //Red
 	colorMapping["navigate"] = RGB(0, 0, 1);	  //Blue
-	colorMapping["hri"] = RGB(0, 0, 0.5);		  //Green
-	colorMapping["recognize"] = RGB(0.5, 0, 0.5); //Purple
-	colorMapping["idle"] = RGB(0, 1, 1);		  //Aqua
+	colorMapping["hri"] = RGB(0.5, 0, 0.5);		  //Purple
+	colorMapping["recognize"] = RGB(0.5, 0, 0.5); //Green
+	colorMapping["idle"] = RGB(0, 1, 1);		  //Light blue
 	colorMapping["ebutton"] = RGB(0, 0, 0);       //No color
-	colorMapping["download"] = RGB(0, 0, 1);      //Lime
+	colorMapping["download"] = RGB(1, 1, 0);      //Lime
 
 	//colorMapping["brown"] = RGB(0.36, 0.2, 0.09);
 	//colorMapping["white"] = RGB(1, 1, 1);
