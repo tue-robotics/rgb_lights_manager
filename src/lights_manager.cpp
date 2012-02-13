@@ -181,8 +181,8 @@ void initMapping() {
 	colorMapping["hri"] = RGB(0.5, 0, 0.5);		  //Purple
 	colorMapping["recognize"] = RGB(0.5, 0, 0.5); //Green
 	colorMapping["idle"] = RGB(0, 1, 1);		  //Light blue
-	colorMapping["ebutton"] = RGB(0, 0, 0);       //No color
-	colorMapping["download"] = RGB(1, 1, 0);      //Lime
+	colorMapping["ebutton"] = RGB(1, 1, 0);       //No color
+	colorMapping["download"] = RGB(1, 0, 1);      //Lime
 
 	//colorMapping["brown"] = RGB(0.36, 0.2, 0.09);
 	//colorMapping["white"] = RGB(1, 1, 1);
@@ -212,7 +212,7 @@ int main(int argc, char **argv) {
 	// Subscribe to hardware status
 	ros::Subscriber sub_base = n.subscribe("/base_status", 1000, &baseStatusCallback);
 	ros::Subscriber sub_arm_left = n.subscribe("/arm_left_status", 1000, &armLeftStatusCallback);
-	ros::Subscriber sub_arm_right = n.subscribe("/arm_right_status", 1000, &armRightStatusCallback);
+	//ros::Subscriber sub_arm_right = n.subscribe("/arm_right_status", 1000, &armRightStatusCallback);
 	ros::Subscriber sub_head = n.subscribe("/head_status", 1000, &headStatusCallback);
 	ros::Subscriber sub_spindle = n.subscribe("/spindle_status", 1000, &spindleStatusCallback);
 
