@@ -10,6 +10,7 @@
   <url>http://ros.org/wiki/rgb_lights_manager_dev</url>
   <depend package="roscpp"/>
   <depend package="amigo_msgs"/>
+  <depend package="diagnostic_msgs"/>
 
 </package>
 

@@ -13,6 +13,7 @@
 #include "std_msgs/UInt8.h"
 #include "std_msgs/Float64.h"
 #include "amigo_msgs/RGBLightCommand.h"
+#include "diagnostic_msgs/DiagnosticArray.h"
 
 #include <map>
 
@@ -67,9 +68,10 @@ Status arm_left_status_ = NO_INFO;
 Status arm_right_status_ = NO_INFO;
 Status head_status_ = NO_INFO;
 Status spindle_status_ = NO_INFO;
+Status diagnostic_status_ = NO_INFO;
 
 // Function overloading allows taking the maximum of five values
-Status max(Status a, Status b, Status c, Status d, Status e) {return max(max(a,b), max(c, max(d,e)));}
+Status max(Status a, Status b, Status c, Status d, Status e, Status f) {return max(max(max(a,b), max(c, max(d,e))),f);}
 
 
 /* Function that generates an output on the /rgb_lights_controller/reference topic based on all inputs
@@ -102,8 +104,7 @@ void update() {
 	} // If no user input is given, base color on executioner state
 	else {
 
-		// Take the worst case hardware status
-		int hardware_status = max(base_status_, arm_left_status_, arm_right_status_, head_status_,spindle_status_);
+		
 
 		// Set color using the state-to-color mapping
 		string state = "";
@@ -114,18 +115,21 @@ void update() {
 		rgb_msg.r = colorMapping[state].r;
 		rgb_msg.g = colorMapping[state].g;
 		rgb_msg.b = colorMapping[state].b;
+	
+	}	
+	
+	// Take the worst case hardware status
+	int hardware_status = max(base_status_, arm_left_status_, arm_right_status_, head_status_,spindle_status_, diagnostic_status_);
 
-		// If hardware status != normal, calculate sine for blinking/fading, otherwise, amp = 1
-		double amp = hardware_status?0.5+0.5*sin(2 * 3.1415 * freq * (ros::Time::now().toSec()-t_start)):1;
+	// If hardware status != normal, calculate sine for blinking/fading, otherwise, amp = 1
+	double amp = hardware_status?0.5+0.5*sin(2 * 3.1415 * freq * (ros::Time::now().toSec()-t_start)):1;
 
-		// If error, fading should be blinking, hence round sine to 0 or 1,
-		if (hardware_status == 2) amp = floor(amp+0.5);
+	// If error, fading should be blinking, hence round sine to 0 or 1,
+	if (hardware_status == 2) amp = floor(amp+0.5);
 
-		rgb_msg.r *= amp;
-		rgb_msg.g *= amp;
-		rgb_msg.b *= amp;
-
-	}
+	rgb_msg.r *= amp;
+	rgb_msg.g *= amp;
+	rgb_msg.b *= amp;
 
 	// Publish color
 	pub_rgb_.publish(rgb_msg);
@@ -174,6 +178,17 @@ void eButtonCallback(const std_msgs::Bool::ConstPtr& status_msg) {
 	emergency_button_pressed_ = (status_msg->data);
 }
 
+void diagnosticCallback(const diagnostic_msgs::DiagnosticArray::ConstPtr& msg)
+{
+	if (!strcmp(msg->status[0].name.c_str(),"Batteries")){
+		
+		if (msg->status[0].level == 0) {diagnostic_status_ = OK; }
+		else if (msg->status[0].level == 1) {diagnostic_status_ = WARNING; }
+		else {diagnostic_status_ = ERROR; }
+	}	
+	
+}
+
 void initMapping() {
 	colorMapping["default"] = RGB(0, 0, 1);       //Blue
 	colorMapping["manipulate"] = RGB(1, 0, 0);    //Red
@@ -218,6 +233,9 @@ int main(int argc, char **argv) {
 
 	// Subscribe to emergence switch
 	ros::Subscriber sub_eswitch = n.subscribe("/emergency_switch", 1000, &eButtonCallback);
+	
+	// Subscribe to diagnostics topic
+	ros::Subscriber diag_sub = n.subscribe("/diagnostics", 1000, &diagnosticCallback);
 
 	// Publisher rgb value in interval [0,1]
 	pub_rgb_ = n.advertise<std_msgs::ColorRGBA>("/rgb_lights_controller/reference", 100);
