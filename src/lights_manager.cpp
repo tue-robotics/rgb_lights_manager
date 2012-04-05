@@ -227,7 +227,7 @@ int main(int argc, char **argv) {
 	// Subscribe to hardware status
 	ros::Subscriber sub_base = n.subscribe("/base_status", 1000, &baseStatusCallback);
 	ros::Subscriber sub_arm_left = n.subscribe("/arm_left_status", 1000, &armLeftStatusCallback);
-	//ros::Subscriber sub_arm_right = n.subscribe("/arm_right_status", 1000, &armRightStatusCallback);
+	ros::Subscriber sub_arm_right = n.subscribe("/arm_right_status", 1000, &armRightStatusCallback);
 	ros::Subscriber sub_head = n.subscribe("/head_status", 1000, &headStatusCallback);
 	ros::Subscriber sub_spindle = n.subscribe("/spindle_status", 1000, &spindleStatusCallback);
 
