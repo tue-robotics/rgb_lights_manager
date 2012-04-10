@@ -14,6 +14,7 @@
 #include "std_msgs/Float64.h"
 #include "amigo_msgs/RGBLightCommand.h"
 #include "diagnostic_msgs/DiagnosticArray.h"
+#include "smach_msgs/SmachContainerStatus.h"
 
 #include <map>
 
@@ -141,10 +142,16 @@ void userCallback(const amigo_msgs::RGBLightCommand::ConstPtr& rgb_msg) {
 	if (user_color_set_) user_color = rgb_msg->color;
 }
 
-void execCallback(const std_msgs::String::ConstPtr& status_msg) {
-	execution_state_ = status_msg->data;
+void execCallback(const smach_msgs::SmachContainerStatus::ConstPtr& status_msg) {
+	
+	// Currently only listening to the first entry of the array of active states
+	execution_state_ = status_msg->active_states[0];
+	
 	// Convert input to lower case only
 	transform(execution_state_.begin(), execution_state_.end(), execution_state_.begin(), ptr_fun<int, int>(tolower));
+	
+	///ROS_INFO("Execution state = %s",execution_state_.c_str());
+
 }
 
 void baseStatusCallback(const std_msgs::Bool::ConstPtr& status_msg) {
@@ -198,10 +205,19 @@ void initMapping() {
 	colorMapping["idle"] = RGB(0, 1, 1);		  //Light blue
 	colorMapping["ebutton"] = RGB(1, 1, 0);       //No color
 	colorMapping["download"] = RGB(1, 0, 1);      //Lime
-
-	//colorMapping["brown"] = RGB(0.36, 0.2, 0.09);
-	//colorMapping["white"] = RGB(1, 1, 1);
-	//colorMapping["yellow"] = RGB(1, 1, 0);
+	
+	colorMapping["initialize"] = RGB(0.5, 0, 0.5);		  //Purple
+	colorMapping["wait_for_door"] = RGB(0, 1, 1);		  //Light blue
+	colorMapping["enter_room"] = RGB(0, 0, 1);	  //Blue
+	colorMapping["question"] = RGB(0.5, 0, 0.5); //Green
+	colorMapping["explore"] = RGB(0, 0, 1);	  //Blue
+	colorMapping["look"] = RGB(1, 0, 1);      //Lime
+	colorMapping["pre_grab"] = RGB(1, 0, 0);    //Red
+	colorMapping["prepare_orientation"] = RGB(1, 0, 0);    //Red
+	colorMapping["grab"] = RGB(1, 0, 0);    //Red
+	colorMapping["return"] = RGB(0, 0, 1);	  //Blue
+	colorMapping["finish"] = RGB(0, 1, 1);		  //Light blue
+	
 
 }
 
@@ -222,7 +238,7 @@ int main(int argc, char **argv) {
 	ros::Subscriber sub_user = n.subscribe("/user_set_rgb_lights", 1000, &userCallback);
 
 	// Subscribe to the execution state topic
-	ros::Subscriber sub_exec = n.subscribe("/execution_state", 1000, &execCallback);
+	ros::Subscriber sub_exec = n.subscribe("/server_name/smach/container_status", 1, &execCallback);
 
 	// Subscribe to hardware status
 	ros::Subscriber sub_base = n.subscribe("/base_status", 1000, &baseStatusCallback);
