@@ -107,8 +107,6 @@ void update() {
     } // If no user input is given, base color on executioner state
     else {
 
-
-
         // Set color using the state-to-color mapping
         if (execution_state_ != "" && colorMapping.count(execution_state_)>0) {
             state = execution_state_;
@@ -146,7 +144,7 @@ void userCallback(const amigo_msgs::RGBLightCommand::ConstPtr& rgb_msg) {
 template <typename T,unsigned S>
 unsigned ArraySize(const T (&v)[S])
 {
-  return S;
+    return S;
 }
 
 void execCallback(const smach_msgs::SmachContainerStatus::ConstPtr& status_msg) {
@@ -213,7 +211,7 @@ void initMapping() {
     colorMapping["ebutton"] = RGB(1, 1, 0);       //No color
     colorMapping["download"] = RGB(0.2, 0.8, 0.2);      //Lime
 
-    colorMapping["initialize"] = RGB(0.5, 0, 0.5);		  //Purple
+    /*colorMapping["initialize"] = RGB(0.5, 0, 0.5);		  //Purple
     colorMapping["wait_for_door"] = RGB(0, 1, 1);		  //Light blue
     colorMapping["enter_room"] = RGB(0, 0, 1);	  //Blue
     colorMapping["question"] = RGB(0.5, 0, 0.5); //Green
@@ -224,13 +222,45 @@ void initMapping() {
     colorMapping["grab"] = RGB(1, 0, 0);    //Red
     colorMapping["return"] = RGB(0, 0, 1);	  //Blue
     colorMapping["finish"] = RGB(0, 1, 1);		  //Light blue
-    
+
     colorMapping["introduction"] = RGB(0.5, 0, 0.5); //Green
     colorMapping["follow"] = RGB(0, 0, 1); //Blue
-	colorMapping["target_lost"] = RGB(0, 1, 1);		  //Light blue
-	colorMapping["wait"] = RGB(0, 1, 1);		  //Light blue
-	colorMapping["stop"] = RGB(0.5, 0, 0.5); //Green
-	colorMapping["identify"] = RGB(0.5, 0, 0.5); //Green
+    colorMapping["target_lost"] = RGB(0, 1, 1);		  //Light blue
+    colorMapping["wait"] = RGB(0, 1, 1);		  //Light blue
+    colorMapping["stop"] = RGB(0.5, 0, 0.5); //Green
+    colorMapping["identify"] = RGB(0.5, 0, 0.5); //Green*/
+
+    colorMapping["init"] = RGB(0.5, 0, 0.5); //
+    colorMapping["await_person"] = RGB(0, 1, 1); //
+    colorMapping["say_closer"] = RGB(0, 1, 0); //
+    colorMapping["wait_1"] = RGB(0, 1, 1); //
+    colorMapping["recognize_person"] = RGB(0, 1, 0); //
+    colorMapping["say_hi"] = RGB(0, 1, 0); //
+    colorMapping["say_dont_recognize"] = RGB(0, 1, 0); //
+    colorMapping["check_if_operator"] = RGB(0.5, 0, 0.5); //
+    colorMapping["say_wait_for_operator"] = RGB(0, 1, 0); //
+    colorMapping["say_follow"] = RGB(0, 1, 0); //
+    colorMapping["wait_for_check_loc"] = RGB(0, 1, 1); //
+    colorMapping["check_operator_loc"] = RGB(0.5, 0, 0.5); //
+    colorMapping["goto_room"] = RGB(0, 0, 1); //
+    colorMapping["look_for_drink"] = RGB(0, 1, 0); //
+    colorMapping["GrabMachine"] = RGB(1, 0, 0); //
+    colorMapping["pre_grab"] = RGB(1, 0, 0); //
+    colorMapping["prepare_orientation"] = RGB(1, 0, 0); //
+    colorMapping["grab"] = RGB(1, 0, 0); //
+    colorMapping["carrying_pose"] = RGB(1, 0, 0); //
+    colorMapping["goto_person"] = RGB(0, 0, 1); //
+    colorMapping["present_drink"] = RGB(0, 1, 0); //
+    colorMapping["handover"] = RGB(1, 0, 0); //
+    colorMapping["say_enjoy"] = RGB(0, 1, 0); //
+    colorMapping["say_no_drink"] = RGB(0, 1, 0); //
+    colorMapping["set_room_fail"] = RGB(0.5, 0, 0.5); //
+    colorMapping["goto_person_failed"] = RGB(0, 0, 1); //
+    colorMapping["report_failed"] = RGB(0, 1, 0); //
+    colorMapping["return"] = RGB(0, 0, 1); //
+    colorMapping["finish"] = RGB(0, 1, 1); //
+
+
 }
 
 
