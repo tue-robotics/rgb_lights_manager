@@ -57,7 +57,7 @@ std_msgs::ColorRGBA user_color;
 
 // State received from executioner, empty by default
 string execution_state_ = "";
-ros::Time time_execution_state_update_ = ros::Time::now(); // Time at which the execution has been last updated
+ros::Time time_execution_state_update_; // Time at which the execution has been last updated
 ros::Duration execution_state_reset_duration_(60); // Time it takes before the execution state is reset to default
 
 // Starting (ros) time of the node
@@ -112,7 +112,7 @@ void update() {
 
         // Set color using the state-to-color mapping
         string state = "";
-        if (execution_state_ != "" && colorMapping.count(execution_state_)>0) {
+        if (execution_state_ != "" && execution_state_ != "none" && colorMapping.count(execution_state_)>0) {
             state = execution_state_;
         } else state = "default";
 
@@ -171,6 +171,7 @@ void execCallback(const smach_msgs::SmachContainerStatus::ConstPtr& status_msg) 
 
         // Currently only listening to the first entry of the array of active states
         execution_state_ = status_msg->active_states[0];
+        ROS_INFO(execution_state_.c_str());
 
         // Convert input to lower case only
         transform(execution_state_.begin(), execution_state_.end(), execution_state_.begin(), ptr_fun<int, int>(tolower));
@@ -230,7 +231,7 @@ void initMapping() {
     colorMapping["manipulate"] = RGB(1, 0, 0);    //Red
     colorMapping["navigate"] = RGB(0, 0, 1);	  //Blue
     colorMapping["hri"] = RGB(0.5, 0, 0.5);		  //Purple
-    colorMapping["recognize"] = RGB(0.5, 0, 0.5); //Green
+    colorMapping["recognize"] = RGB(0, 1, 0); //Green
     colorMapping["idle"] = RGB(0, 1, 1);		  //Light blue
     colorMapping["ebutton"] = RGB(1, 1, 0);       //No color
     colorMapping["download"] = RGB(0.2, 0.8, 0.2);      //Lime
@@ -238,7 +239,7 @@ void initMapping() {
     /*colorMapping["initialize"] = RGB(0.5, 0, 0.5);		  //Purple
     colorMapping["wait_for_door"] = RGB(0, 1, 1);		  //Light blue
     colorMapping["enter_room"] = RGB(0, 0, 1);	  //Blue
-    colorMapping["question"] = RGB(0.5, 0, 0.5); //Green
+    colorMapping["question"] = RGB(0, 1, 0); //Green
     colorMapping["explore"] = RGB(0, 0, 1);	  //Blue
     colorMapping["look"] = RGB(0.2, 0.8, 0.2);      //Lime
     colorMapping["pre_grab"] = RGB(1, 0, 0);    //Red
@@ -247,12 +248,12 @@ void initMapping() {
     colorMapping["return"] = RGB(0, 0, 1);	  //Blue
     colorMapping["finish"] = RGB(0, 1, 1);		  //Light blue
 
-    colorMapping["introduction"] = RGB(0.5, 0, 0.5); //Green
+    colorMapping["introduction"] = RGB(0, 1, 0); //Green
     colorMapping["follow"] = RGB(0, 0, 1); //Blue
     colorMapping["target_lost"] = RGB(0, 1, 1);		  //Light blue
     colorMapping["wait"] = RGB(0, 1, 1);		  //Light blue
-    colorMapping["stop"] = RGB(0.5, 0, 0.5); //Green
-    colorMapping["identify"] = RGB(0.5, 0, 0.5); //Green*/
+    colorMapping["stop"] = RGB(0, 1, 0); //Green
+    colorMapping["identify"] = RGB(0, 1, 0); //Green*/
 
     colorMapping["init"] = RGB(0.5, 0, 0.5); //
     colorMapping["await_person"] = RGB(0, 1, 1); //
@@ -284,6 +285,60 @@ void initMapping() {
     colorMapping["return"] = RGB(0, 0, 1); //
     colorMapping["finish"] = RGB(0, 1, 1); //
 
+	/// Who is Who
+	colorMapping["init"] = RGB(0.5, 0, 0.5);		  //Purple
+	colorMapping["instruct_wait_for_door"] = RGB(0, 1, 0); //Green
+	colorMapping["await_door_open"] = RGB(0, 1, 1);		  //Light blue
+	colorMapping["store_time"] = RGB(0.5, 0, 0.5);		  //Purple
+	colorMapping["set_first_target"] = RGB(0.5, 0, 0.5);		  //Purple
+	colorMapping["enter_first_room"] = RGB(0, 0, 1);       //Blue
+	colorMapping["learn_single_person"] = RGB(0, 1, 0); //Green
+	colorMapping["store_name"] = RGB(0.5, 0, 0.5);		  //Purple
+	colorMapping["intro_of_guests"] = RGB(0, 1, 0); //Green
+	colorMapping["instruct_wait_for_continue"] = RGB(0, 1, 0); //Green
+	colorMapping["await_continue"] = RGB(0, 1, 1);		  //Light blue
+	colorMapping["set_people_room_as_target"] = RGB(0.5, 0, 0.5);		  //Purple
+	colorMapping["goto_second_room"] = RGB(0, 0, 1);       //Blue
+	colorMapping["instruct_ordering"] = RGB(0, 1, 0); //Green
+	colorMapping["await_orderer"] = RGB(0, 1, 1);		  //Light blue
+	colorMapping["say_closer"] = RGB(0, 1, 0); //Green
+	colorMapping["recognize_person"] = RGB(0, 1, 0); //Green
+	colorMapping["say_hi"] = RGB(0, 1, 0); //Green
+	colorMapping["generate_ask_order_sentence"] = RGB(0.5, 0, 0.5);		  //Purple
+	colorMapping["ask_drink"] = RGB(0, 1, 0); //Green
+	colorMapping["store_order"] = RGB(0.5, 0, 0.5);		  //Purple
+	colorMapping["take_single_order"] = RGB(0, 1, 0); //Green
+	colorMapping["take_orders"] = RGB(0, 1, 0); //Green
+	colorMapping["recite_orders"] = RGB(0, 1, 0); //Green
+	colorMapping["say_deliver_drink"] = RGB(0, 1, 0); //Green
+	colorMapping["set_drinks_room_as_targets"] = RGB(0.5, 0, 0.5);		  //Purple
+	colorMapping["goto_drinks_room"] = RGB(0, 0, 1);       //Blue
+	colorMapping["set_desired_objects"] = RGB(0.5, 0, 0.5);		  //Purple
+	colorMapping["explore_drinks"] = RGB(0, 0, 1);       //Blue
+	colorMapping["look_for_drinks"] = RGB(0.2, 0.8, 0.2);      //Lime
+	colorMapping["store_failed_drink"] = RGB(0.5, 0, 0.5);		  //Purple
+	colorMapping["inform_failed_drink"] = RGB(0, 1, 0); //Green
+	colorMapping["pre_grab"] = RGB(1, 0, 0);    //Red
+	colorMapping["human_handover"] = RGB(0, 1, 0); //Green
+	colorMapping["prepare_orientation"] = RGB(1, 0, 0);    //Red
+	colorMapping["grab"] = RGB(1, 0, 0);    //Red
+	colorMapping["carrying_pose"] = RGB(1, 0, 0);    //Red
+	colorMapping["set_people_room_as_target_2"] = RGB(0.5, 0, 0.5);		  //Purple
+	colorMapping["goto_persons"] = RGB(0, 0, 1);       //Blue
+	colorMapping["set_drinks_receiver"] = RGB(0.5, 0, 0.5);		  //Purple
+	colorMapping["identify_receiver"] = RGB(0, 1, 0); //Green
+	colorMapping["say_drink_delivered"] = RGB(0, 1, 0); //Green
+	colorMapping["wait_for_thanks"] = RGB(0, 1, 1);		  //Light blue
+	colorMapping["release_drink"] = RGB(1, 0, 0);    //Red
+	colorMapping["say_take_drink"] = RGB(0, 1, 0); //Green
+	colorMapping["report_failed_drinks"] = RGB(0, 1, 0); //Green
+	colorMapping["reset_arm"] = RGB(1, 0, 0);    //Red
+	colorMapping["deliver_single_drink"] = RGB(0, 1, 0); //Green
+	colorMapping["deliver_drinks"] = RGB(0, 1, 0); //Green
+	colorMapping["goto_persons_2"] = RGB(0, 0, 1);       //Blue
+	colorMapping["report_failed_drinks"] = RGB(0, 1, 0); //Green
+	colorMapping["return"] = RGB(0, 0, 1);       //Blue
+	colorMapping["finish"] = RGB(0, 1, 1);		  //Light blue
 
 }
 
@@ -299,6 +354,7 @@ int main(int argc, char **argv) {
 
     // Store starting time
     t_start = ros::Time::now().toSec();
+	time_execution_state_update_ = ros::Time::now();
 
     // Subscribe to the user rgb topic
     ros::Subscriber sub_user = n.subscribe("/user_set_rgb_lights", 1000, &userCallback);
@@ -335,7 +391,8 @@ int main(int argc, char **argv) {
 
         // Only set execution state to default if no new info has been received for a certain duration
         // This prevents the lights from turning blue all the time
-        if ((ros::Time::now() - time_execution_state_update_) > execution_state_reset_duration_) {
+        if (((ros::Time::now() - time_execution_state_update_) > execution_state_reset_duration_) && execution_state_ != "default" ) {
+			ROS_INFO("Resetting execution state to default");
             execution_state_ = "default";
         }
 
