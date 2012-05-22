@@ -57,6 +57,7 @@ std_msgs::ColorRGBA user_color;
 
 // State received from executioner, empty by default
 string execution_state_ = "";
+string state = "";
 ros::Time time_execution_state_update_; // Time at which the execution has been last updated
 ros::Duration execution_state_reset_duration_(60); // Time it takes before the execution state is reset to default
 
@@ -111,10 +112,14 @@ void update() {
 
 
         // Set color using the state-to-color mapping
-        string state = "";
         if (execution_state_ != "" && execution_state_ != "none" && colorMapping.count(execution_state_)>0) {
             state = execution_state_;
-        } else state = "default";
+        } 
+        // If execution_state_ == "none", keep the former color mapping
+        else if (execution_state_ == "none") {
+			ROS_INFO("Execution state = none");
+		}
+        else state = "default";
 
         if (colorMapping.find(state) != colorMapping.end()) {
 
@@ -235,8 +240,9 @@ void initMapping() {
     colorMapping["idle"] = RGB(0, 1, 1);		  //Light blue
     colorMapping["ebutton"] = RGB(1, 1, 0);       //No color
     colorMapping["download"] = RGB(0.2, 0.8, 0.2);      //Lime
-
-    /*colorMapping["initialize"] = RGB(0.5, 0, 0.5);		  //Purple
+	
+	/// Clean up
+    colorMapping["initialize"] = RGB(0.5, 0, 0.5);		  //Purple
     colorMapping["wait_for_door"] = RGB(0, 1, 1);		  //Light blue
     colorMapping["enter_room"] = RGB(0, 0, 1);	  //Blue
     colorMapping["question"] = RGB(0, 1, 0); //Green
@@ -248,12 +254,15 @@ void initMapping() {
     colorMapping["return"] = RGB(0, 0, 1);	  //Blue
     colorMapping["finish"] = RGB(0, 1, 1);		  //Light blue
 
+    /// Follow Me
+    colorMapping["initialize"] = RGB(0.5, 0, 0.5); //Purple
     colorMapping["introduction"] = RGB(0, 1, 0); //Green
+    colorMapping["learn_face"] = RGB(0, 1, 0); //Green
     colorMapping["follow"] = RGB(0, 0, 1); //Blue
     colorMapping["target_lost"] = RGB(0, 1, 1);		  //Light blue
     colorMapping["wait"] = RGB(0, 1, 1);		  //Light blue
     colorMapping["stop"] = RGB(0, 1, 0); //Green
-    colorMapping["identify"] = RGB(0, 1, 0); //Green*/
+    colorMapping["identify"] = RGB(0, 1, 0); //Green
 
     colorMapping["init"] = RGB(0.5, 0, 0.5); //
     colorMapping["await_person"] = RGB(0, 1, 1); //
