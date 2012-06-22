@@ -117,7 +117,7 @@ void update() {
         } 
         // If execution_state_ == "none", keep the former color mapping
         else if (execution_state_ == "none") {
-            ROS_INFO("Execution state = none");
+            ROS_DEBUG("Execution state = none");
         }
         else state = "default";
 
@@ -176,7 +176,7 @@ void execCallback(const smach_msgs::SmachContainerStatus::ConstPtr& status_msg) 
 
         // Currently only listening to the first entry of the array of active states
         execution_state_ = status_msg->active_states[0];
-        ROS_INFO("%s",execution_state_.c_str());
+        ROS_DEBUG("%s",execution_state_.c_str());
 
         // Convert input to lower case only
         transform(execution_state_.begin(), execution_state_.end(), execution_state_.begin(), ptr_fun<int, int>(tolower));
