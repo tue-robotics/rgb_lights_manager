@@ -211,8 +211,9 @@ void headStatusCallback(const std_msgs::Float64::ConstPtr& status_msg) {
 }
 
 void spindleStatusCallback(const std_msgs::Bool::ConstPtr& status_msg) {
-    // status_msg->data is true means spindle is ok
-    spindle_status_ = (status_msg->data)?OK:ERROR;
+    if (status_msg->data == 0) spindle_status_ = OK;
+    else if (status_msg->data == 1) spindle_status_ = WARNING;
+    else spindle_status_ = ERROR;
 }
 
 void eButtonCallback(const std_msgs::Bool::ConstPtr& status_msg) {
