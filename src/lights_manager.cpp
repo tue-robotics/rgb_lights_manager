@@ -11,7 +11,6 @@
 #include "std_msgs/String.h"
 #include "std_msgs/Bool.h"
 #include "std_msgs/UInt8.h"
-#include "std_msgs/Float64.h"
 #include "amigo_msgs/RGBLightCommand.h"
 #include "diagnostic_msgs/DiagnosticArray.h"
 #include "smach_msgs/SmachContainerStatus.h"
@@ -205,7 +204,7 @@ void armRightStatusCallback(const std_msgs::UInt8::ConstPtr& status_msg) {
     else arm_right_status_ = ERROR;
 }
 
-void headStatusCallback(const std_msgs::Float64::ConstPtr& status_msg) {
+void headStatusCallback(const std_msgs::Bool::ConstPtr& status_msg) {
     // TODO this topic gives meaningless data, therefore always consider it to be correct
     head_status_ = OK;
 }
