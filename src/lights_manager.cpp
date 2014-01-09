@@ -204,9 +204,15 @@ void armRightStatusCallback(const std_msgs::UInt8::ConstPtr& status_msg) {
     else arm_right_status_ = ERROR;
 }
 
-void headStatusCallback(const std_msgs::Bool::ConstPtr& status_msg) {
+//void headStatusCallback(const std_msgs::Bool::ConstPtr& status_msg) {
+//    // TODO this topic gives meaningless data, therefore always consider it to be correct
+//    head_status_ = OK;
+//}
+
+void headStatusCallback(const diagnostic_msgs::DiagnosticStatus::ConstPtr& status_msg) {
     // TODO this topic gives meaningless data, therefore always consider it to be correct
-    head_status_ = OK;
+    if (status_msg->level == 0) head_status_ = OK;
+    else head_status_ = ERROR;
 }
 
 void spindleStatusCallback(const std_msgs::Bool::ConstPtr& status_msg) {
