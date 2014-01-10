@@ -184,40 +184,13 @@ void execCallback(const smach_msgs::SmachContainerStatus::ConstPtr& status_msg) 
         ROS_WARN("Received empty status list");
     }
     ///ROS_INFO("Execution state = %s",execution_state_.c_str());
-
 }
 
-void baseStatusCallback(const std_msgs::Bool::ConstPtr& status_msg) {
-    // status_msg->data is true means base is ok
-    base_status_ = (status_msg->data)?OK:ERROR;
-}
-
-void armLeftStatusCallback(const std_msgs::UInt8::ConstPtr& status_msg) {
-    if (status_msg->data == 0) arm_left_status_ = OK;
-    else if (status_msg->data == 1) arm_left_status_ = WARNING;
-    else arm_left_status_ = ERROR;
-}
-
-void armRightStatusCallback(const std_msgs::UInt8::ConstPtr& status_msg) {
-    if (status_msg->data == 0) arm_right_status_ = OK;
-    else if (status_msg->data == 1) arm_right_status_ = WARNING;
-    else arm_right_status_ = ERROR;
-}
-
-//void headStatusCallback(const std_msgs::Bool::ConstPtr& status_msg) {
-//    // TODO this topic gives meaningless data, therefore always consider it to be correct
-//    head_status_ = OK;
-//}
-
-void headStatusCallback(const diagnostic_msgs::DiagnosticStatus::ConstPtr& status_msg) {
-    // TODO this topic gives meaningless data, therefore always consider it to be correct
-    if (status_msg->level == 0) head_status_ = OK;
-    else head_status_ = ERROR;
-}
-
-void spindleStatusCallback(const std_msgs::Bool::ConstPtr& status_msg) {
-    // status_msg->data is true means spindle is ok
-    spindle_status_ = (status_msg->data)?OK:ERROR;
+void hardwareCallback(const diagnostic_msgs::DiagnosticStatus::ConstPtr& status_msg) {
+    if (status_msg->level == 0) spindle_status_ = OK;
+    else if (status_msg->level == 3) spindle_status_ = WARNING;
+    else if (status_msg->level == 2) spindle_status_ = NO_INFO; // idle state should be shown same as no_info
+    else spindle_status_ = ERROR;
 }
 
 void eButtonCallback(const std_msgs::Bool::ConstPtr& status_msg) {
@@ -420,11 +393,11 @@ int main(int argc, char **argv) {
     ros::Subscriber sub_exec = n.subscribe("/server_name/smach/container_status", 1, &execCallback);
 
     // Subscribe to hardware status
-    ros::Subscriber sub_base = n.subscribe("/base_status", 1000, &baseStatusCallback);
-    ros::Subscriber sub_arm_left = n.subscribe("/arm_left_status", 1000, &armLeftStatusCallback);
-    ros::Subscriber sub_arm_right = n.subscribe("/arm_right_status", 1000, &armRightStatusCallback);
-    ros::Subscriber sub_head = n.subscribe("/head_status", 1000, &headStatusCallback);
-    ros::Subscriber sub_spindle = n.subscribe("/spindle_status", 1000, &spindleStatusCallback);
+    ros::Subscriber sub_base = n.subscribe("/base_status", 1000, &hardwareCallback);
+    ros::Subscriber sub_arm_left = n.subscribe("/arm_left_status", 1000, &hardwareCallback);
+    ros::Subscriber sub_arm_right = n.subscribe("/arm_right_status", 1000, &hardwareCallback);
+    ros::Subscriber sub_head = n.subscribe("/head_status", 1000, &hardwareCallback);
+    ros::Subscriber sub_spindle = n.subscribe("/spindle_status", 1000, &hardwareCallback);
 
     // Subscribe to emergence switch
     ros::Subscriber sub_eswitch = n.subscribe("/emergency_switch", 1000, &eButtonCallback);
