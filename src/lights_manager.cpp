@@ -387,23 +387,23 @@ int main(int argc, char **argv) {
     time_execution_state_update_ = ros::Time::now();
 
     // Subscribe to the user rgb topic
-    ros::Subscriber sub_user = n.subscribe("/user_set_rgb_lights", 1000, &userCallback);
+    ros::Subscriber sub_user = n.subscribe("/user_set_rgb_lights", 1, &userCallback);
 
     // Subscribe to the execution state topic
     ros::Subscriber sub_exec = n.subscribe("/server_name/smach/container_status", 1, &execCallback);
 
     // Subscribe to hardware status
-    ros::Subscriber sub_base = n.subscribe("/base_status", 1000, &hardwareCallback);
-    ros::Subscriber sub_arm_left = n.subscribe("/arm_left_status", 1000, &hardwareCallback);
-    ros::Subscriber sub_arm_right = n.subscribe("/arm_right_status", 1000, &hardwareCallback);
-    ros::Subscriber sub_head = n.subscribe("/head_status", 1000, &hardwareCallback);
-    ros::Subscriber sub_spindle = n.subscribe("/spindle_status", 1000, &hardwareCallback);
+    ros::Subscriber sub_base = n.subscribe("/base_status", 1, &hardwareCallback);
+    ros::Subscriber sub_arm_left = n.subscribe("/arm_left_status", 1, &hardwareCallback);
+    ros::Subscriber sub_arm_right = n.subscribe("/arm_right_status", 1, &hardwareCallback);
+    ros::Subscriber sub_head = n.subscribe("/head_status", 1, &hardwareCallback);
+    ros::Subscriber sub_spindle = n.subscribe("/spindle_status", 1, &hardwareCallback);
 
     // Subscribe to emergence switch
-    ros::Subscriber sub_eswitch = n.subscribe("/emergency_switch", 1000, &eButtonCallback);
+    ros::Subscriber sub_eswitch = n.subscribe("/emergency_switch", 1, &eButtonCallback);
 
     // Subscribe to diagnostics topic
-    ros::Subscriber diag_sub = n.subscribe("/diagnostics", 1000, &diagnosticCallback);
+    ros::Subscriber diag_sub = n.subscribe("/diagnostics", 1, &diagnosticCallback);
 
     // Publisher rgb value in interval [0,1]
     pub_rgb_ = n.advertise<std_msgs::ColorRGBA>("/rgb_lights_controller/reference", 100);
