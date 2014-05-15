@@ -29,7 +29,8 @@ enum Status {
     NO_INFO = 0, // TODO can be given a unique number
     OK = 0,
     WARNING = 1,
-    ERROR = 2
+    ERROR = 2,
+    IDLE = 3
 };
 
 // Class that contains an RGB color
@@ -67,16 +68,11 @@ double t_start = 0;
 bool emergency_button_pressed_ = true;
 
 // Status hardware components, default is zero, meaning everything okay or switched off
-Status base_status_ = NO_INFO;
-Status arm_left_status_ = NO_INFO;
-Status arm_right_status_ = NO_INFO;
-Status head_status_ = NO_INFO;
-Status spindle_status_ = NO_INFO;
+Status hardware_status = NO_INFO;
 Status diagnostic_status_ = NO_INFO;
 
 // Function overloading allows taking the maximum of five values
-Status max(Status a, Status b, Status c, Status d, Status e, Status f) {return max(max(max(a,b), max(c, max(d,e))),f);}
-
+//Status max(Status a, Status b, Status c, Status d, Status e, Status f) {return max(max(max(a,b), max(c, max(d,e))),f);}
 
 /* Function that generates an output on the /rgb_lights_controller/reference topic based on all inputs
  * Priority list:
@@ -95,6 +91,11 @@ void update() {
 
     // If emergency button pressed, take the ebutton color
     if (emergency_button_pressed_) {
+        rgb_msg.r = colorMapping["ebutton"].r;
+        rgb_msg.g = colorMapping["ebutton"].g;
+        rgb_msg.b = colorMapping["ebutton"].b;
+    }
+    else if (hardware_status == 3) { // if idle state show color equal to emergency button
         rgb_msg.r = colorMapping["ebutton"].r;
         rgb_msg.g = colorMapping["ebutton"].g;
         rgb_msg.b = colorMapping["ebutton"].b;
@@ -130,9 +131,6 @@ void update() {
         }
 
     }
-
-    // Take the worst case hardware status
-    int hardware_status = max(base_status_, arm_left_status_, arm_right_status_, head_status_,spindle_status_, diagnostic_status_);
 
     // If hardware status != normal, calculate sine for blinking/fading, otherwise, amp = 1
     /*double amp = hardware_status?0.5+0.5*sin(2 * 3.1415 * freq * (ros::Time::now().toSec()-t_start)):1;
@@ -186,11 +184,16 @@ void execCallback(const smach_msgs::SmachContainerStatus::ConstPtr& status_msg) 
     ///ROS_INFO("Execution state = %s",execution_state_.c_str());
 }
 
-void hardwareCallback(const diagnostic_msgs::DiagnosticStatus::ConstPtr& status_msg) {
-    if (status_msg->level == 0) spindle_status_ = OK;
-    else if (status_msg->level == 3) spindle_status_ = WARNING;
-    else if (status_msg->level == 2) spindle_status_ = NO_INFO; // idle state should be shown same as no_info
-    else spindle_status_ = ERROR;
+void hardwareCallback(const diagnostic_msgs::DiagnosticArray status_array) {
+	int hardware_status_;
+    hardware_status_ = max(status_array.status[1].level, max(status_array.status[1].level, max(status_array.status[2].level, max(status_array.status[3].level, max(status_array.status[4].level,status_array.status[5].level)))));
+    //ROS_WARN("Took max status: %i. from array :[%i, %i, %i, %i, %i]!",hardware_status_,status_array.status[1].level,status_array.status[2].level,status_array.status[3].level,status_array.status[4].level,status_array.status[5].level);
+    if (hardware_status_ == 0) { hardware_status = NO_INFO;	} 
+    else if (hardware_status_ == 1) { hardware_status = IDLE; } 
+    else if (hardware_status_ == 2) { hardware_status = OK; } 
+    else if (hardware_status_ == 3) { hardware_status = WARNING; } 
+    else { hardware_status = ERROR; }
+    
 }
 
 void eButtonCallback(const std_msgs::Bool::ConstPtr& status_msg) {
@@ -393,11 +396,7 @@ int main(int argc, char **argv) {
     ros::Subscriber sub_exec = n.subscribe("/server_name/smach/container_status", 1, &execCallback);
 
     // Subscribe to hardware status
-    ros::Subscriber sub_base = n.subscribe("/base_status", 1, &hardwareCallback);
-    ros::Subscriber sub_arm_left = n.subscribe("/arm_left_status", 1, &hardwareCallback);
-    ros::Subscriber sub_arm_right = n.subscribe("/arm_right_status", 1, &hardwareCallback);
-    ros::Subscriber sub_head = n.subscribe("/head_status", 1, &hardwareCallback);
-    ros::Subscriber sub_spindle = n.subscribe("/spindle_status", 1, &hardwareCallback);
+    ros::Subscriber sub_hardware = n.subscribe("/hardware_status", 1, &hardwareCallback);
 
     // Subscribe to emergence switch
     ros::Subscriber sub_eswitch = n.subscribe("/emergency_switch", 1, &eButtonCallback);
@@ -412,12 +411,8 @@ int main(int argc, char **argv) {
     while (ros::ok()) {
 
         // Set everything to default so only 'new' info is taken into account'
-        base_status_ = NO_INFO;
-        arm_left_status_ = NO_INFO;
-        arm_right_status_ = NO_INFO;
-        head_status_ = NO_INFO;
-        spindle_status_ = NO_INFO;
-        diagnostic_status_ = NO_INFO;
+        hardware_status = NO_INFO;
+		diagnostic_status_ = NO_INFO;
 
         // Only set execution state to default if no new info has been received for a certain duration
         // This prevents the lights from turning blue all the time
