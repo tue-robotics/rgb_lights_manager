@@ -38,5 +38,5 @@ add_executable(rgb_lights_manager
     src/lights_manager.cpp
 )
 target_link_libraries(rgb_lights_manager ${catkin_LIBRARIES})
-
+add_dependencies(rgb_lights_manager ${catkin_EXPORTED_TARGETS})
 
