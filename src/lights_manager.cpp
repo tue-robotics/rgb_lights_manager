@@ -381,6 +381,7 @@ int main(int argc, char **argv) {
     // Initialize node
     ros::init(argc, argv, "rgb_lights_manager");
     ros::NodeHandle n("~");
+    ros::NodeHandle gn;
 
     // Initialize state-to-color mapping
     initMapping();
@@ -390,22 +391,22 @@ int main(int argc, char **argv) {
     time_execution_state_update_ = ros::Time::now();
 
     // Subscribe to the user rgb topic
-    ros::Subscriber sub_user = n.subscribe("/user_set_rgb_lights", 1, &userCallback);
+    ros::Subscriber sub_user = n.subscribe("user_set_rgb_lights", 1, &userCallback);
 
     // Subscribe to the execution state topic
-    ros::Subscriber sub_exec = n.subscribe("/server_name/smach/container_status", 1, &execCallback);
+    ros::Subscriber sub_exec = gn.subscribe("smach/container_status", 1, &execCallback);
 
     // Subscribe to hardware status
-    ros::Subscriber sub_hardware = n.subscribe("/hardware_status", 1, &hardwareCallback);
+    ros::Subscriber sub_hardware = gn.subscribe("hardware_status", 1, &hardwareCallback);
 
     // Subscribe to emergence switch
-    ros::Subscriber sub_eswitch = n.subscribe("/emergency_switch", 1, &eButtonCallback);
+    ros::Subscriber sub_eswitch = gn.subscribe("emergency_switch", 1, &eButtonCallback);
 
     // Subscribe to diagnostics topic
-    ros::Subscriber diag_sub = n.subscribe("/diagnostics", 1, &diagnosticCallback);
+    ros::Subscriber diag_sub = gn.subscribe("/diagnostics", 1, &diagnosticCallback);
 
     // Publisher rgb value in interval [0,1]
-    pub_rgb_ = n.advertise<std_msgs::ColorRGBA>("/rgb_lights_controller/reference", 100);
+    pub_rgb_ = gn.advertise<std_msgs::ColorRGBA>("rgb_lights_controller/reference", 100);
 
     ros::Rate r(20);
     while (ros::ok()) {
