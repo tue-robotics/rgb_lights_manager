@@ -9,7 +9,6 @@
 
 #include "std_msgs/ColorRGBA.h"
 #include "std_msgs/String.h"
-#include "std_msgs/Bool.h"
 #include "std_msgs/UInt8.h"
 #include "amigo_msgs/RGBLightCommand.h"
 #include "diagnostic_msgs/DiagnosticArray.h"
@@ -196,8 +195,12 @@ void hardwareCallback(const diagnostic_msgs::DiagnosticArray status_array) {
     
 }
 
-void eButtonCallback(const std_msgs::Bool::ConstPtr& status_msg) {
-    emergency_button_pressed_ = (status_msg->data);
+void eButtonCallback(const diagnostic_msgs::DiagnosticArray::ConstPtr& status_msg) {
+    emergency_button_pressed_ = false;
+    for ( int i=0; i<status_msg->status.size(); i++ ){
+        if ( status_msg->status[i].level )
+            emergency_button_pressed_ = true;
+    }
 }
 
 void diagnosticCallback(const diagnostic_msgs::DiagnosticArray::ConstPtr& msg)
@@ -400,7 +403,7 @@ int main(int argc, char **argv) {
     ros::Subscriber sub_hardware = gn.subscribe("hardware_status", 1, &hardwareCallback);
 
     // Subscribe to emergence switch
-    ros::Subscriber sub_eswitch = gn.subscribe("emergency_switch", 1, &eButtonCallback);
+    ros::Subscriber sub_eswitch = gn.subscribe("ebutton_status", 1, &eButtonCallback);
 
     // Subscribe to diagnostics topic
     ros::Subscriber diag_sub = gn.subscribe("/diagnostics", 1, &diagnosticCallback);
