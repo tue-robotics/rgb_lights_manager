@@ -3,9 +3,9 @@ project(rgb_lights_manager)
 
 find_package(catkin REQUIRED COMPONENTS
     roscpp
-    amigo_msgs
     diagnostic_msgs
     smach_msgs
+    tue_msgs
 )
 
 # ------------------------------------------------------------------------------------------------
