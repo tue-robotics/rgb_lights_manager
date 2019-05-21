@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import roslib; roslib.load_manifest('rgb_lights_manager')
+
 import rospy
 import math
 from amigo_msgs.msg import RGBLightCommand
