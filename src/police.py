@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import roslib; roslib.load_manifest('rgb_lights_manager')
+
 import rospy
 import math
 from amigo_msgs.msg import RGBLightCommand
@@ -18,7 +18,10 @@ def talker():
 		rgb_msg.show_color.data = True
 		pub.publish(rgb_msg)
 		rospy.sleep(0.1)
+
+
 if __name__ == '__main__':
-	try:
-		talker()
-	except rospy.ROSInterruptException: pass
+    try:
+        talker()
+    except rospy.ROSInterruptException:
+        pass

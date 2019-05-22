@@ -10,7 +10,7 @@
 #include "std_msgs/ColorRGBA.h"
 #include "std_msgs/String.h"
 #include "std_msgs/UInt8.h"
-#include "amigo_msgs/RGBLightCommand.h"
+#include "tue_msgs/RGBLightCommand.h"
 #include "diagnostic_msgs/DiagnosticArray.h"
 #include "smach_msgs/SmachContainerStatus.h"
 
@@ -157,7 +157,7 @@ void update() {
     pub_rgb_.publish(rgb_msg);
 }
 
-void userCallback(const amigo_msgs::RGBLightCommand::ConstPtr& rgb_msg) {
+void userCallback(const tue_msgs::RGBLightCommand::ConstPtr& rgb_msg) {
     // If the user gives a true, use the color that is published, if false, stop using the color
     user_color_set_ = rgb_msg->show_color.data;
     if (user_color_set_) user_color = rgb_msg->color;
