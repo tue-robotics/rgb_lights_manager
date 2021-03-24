@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.0.2)
 project(rgb_lights_manager)
 
 find_package(catkin REQUIRED COMPONENTS
@@ -34,7 +34,7 @@ include_directories(
 # )
 # target_link_libraries(library_name ${catkin_LIBRARIES})
 
-add_executable(rgb_lights_manager 
+add_executable(rgb_lights_manager
     src/lights_manager.cpp
 )
 target_link_libraries(rgb_lights_manager ${catkin_LIBRARIES})
