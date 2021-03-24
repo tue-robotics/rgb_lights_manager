@@ -2,7 +2,9 @@
 
 import rospy
 import math
-from amigo_msgs.msg import RGBLightCommand
+from tue_msgs.msg import RGBLightCommand
+
+
 def talker():
 	pub = rospy.Publisher('user_set_rgb_lights', RGBLightCommand)
 	rospy.init_node('police')
