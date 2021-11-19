@@ -159,7 +159,7 @@ void update() {
 
 void userCallback(const tue_msgs::RGBLightCommand::ConstPtr& rgb_msg) {
     // If the user gives a true, use the color that is published, if false, stop using the color
-    user_color_set_ = rgb_msg->show_color.data;
+    user_color_set_ = rgb_msg->show_color;
     if (user_color_set_) user_color = rgb_msg->color;
 }
 
