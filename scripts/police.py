@@ -17,7 +17,7 @@ def talker():
             rgb_msg.color.r = 0.0
             rgb_msg.color.b = 1.0
         #amp = floor(amp+0.5);
-        rgb_msg.show_color.data = True
+        rgb_msg.show_color = True
         pub.publish(rgb_msg)
         rospy.sleep(0.1)
 
