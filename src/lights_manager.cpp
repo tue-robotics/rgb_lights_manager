@@ -197,7 +197,7 @@ void hardwareCallback(const diagnostic_msgs::DiagnosticArray status_array) {
 
 void eButtonCallback(const diagnostic_msgs::DiagnosticArray::ConstPtr& status_msg) {
     emergency_button_pressed_ = false;
-    for ( int i=0; i<status_msg->status.size(); i++ ){
+    for (uint i=0; i<status_msg->status.size(); i++){
         if ( status_msg->status[i].level )
             emergency_button_pressed_ = true;
     }
